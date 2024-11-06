@@ -1,37 +1,28 @@
 package edu.grinnell.csc207.sample;
 
-import edu.grinnell.csc207.util.ArrayUtils;
 import edu.grinnell.csc207.util.IOUtils;
 import edu.grinnell.csc207.util.Matrix;
 import edu.grinnell.csc207.util.MatrixV0;
-
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 /**
- * An implementation of John Conway's Game of Life.
- *
- * @author
+ * An implementation of John Conway's Game of Life. The game involves a board of cells that evolve
+ * across generations based on a set of rules.
  */
 public class GameOfLife {
+
   // +-----------+---------------------------------------------------
   // | Constants |
   // +-----------+
 
-  /**
-   * The default width of the board.
-   */
+  /** The default width of the board. */
   static final int DEFAULT_WIDTH = 20;
 
-  /**
-   * The default number of rows (height) of the board.
-   */
+  /** The default number of rows (height) of the board. */
   static final int DEFAULT_HEIGHT = 10;
 
   // +----------------+----------------------------------------------
@@ -41,11 +32,11 @@ public class GameOfLife {
   /**
    * Print the instructions for Conway's Game of Life.
    *
-   * @param pen
-   *  The PrintWriter used to print the instructions.
+   * @param pen The PrintWriter used to print the instructions.
    */
   public static void printInstructions(PrintWriter pen) {
-    pen.println("""
+    pen.println(
+        """
         Welcome to Conway's Game of Life.
 
         Command-line arguments:
@@ -69,62 +60,58 @@ public class GameOfLife {
         * NEXT - Proceed to the next generation.
         * QUIT - Exit the game.
         """);
-  } // printInstructions(PrintWriter)
+  } // end of printInstructions
 
   /**
    * Print the current state of the game board.
    *
-   * @param pen
-   *   The PrintWriter used for output.
-   * @param board
-   *   The current game board.
+   * @param pen The PrintWriter used for output.
+   * @param board The current game board.
    */
   static void printBoard(PrintWriter pen, Matrix<String> board) {
     pen.println();
     for (int row = 0; row < board.height(); row++) {
       for (int col = 0; col < board.width(); col++) {
         pen.print(board.get(row, col) + " ");
-      }
+      } // end of inner for loop
       pen.println();
-    }
+    } // end of outer for loop
     pen.println();
-  } // printBoard
+  } // end of printBoard
 
   /**
    * Count the number of alive neighbors for a given cell.
    *
-   * @param board
-   *   The game board.
-   * @param row
-   *   The row of the cell.
-   * @param col
-   *   The column of the cell.
+   * @param board The game board.
+   * @param row The row of the cell.
+   * @param col The column of the cell.
    * @return The number of alive neighbors.
    */
   static int countAliveNeighbors(Matrix<String> board, int row, int col) {
     int count = 0;
     for (int dr = -1; dr <= 1; dr++) {
       for (int dc = -1; dc <= 1; dc++) {
-        if (dr == 0 && dc == 0) continue; // Skip the cell itself
+        if (dr == 0 && dc == 0) {
+          continue; // Skip the cell itself
+        } // end of if statement
         int r = row + dr;
         int c = col + dc;
         try {
           if ("O".equals(board.get(r, c))) {
             count++;
-          }
+          } // end of if statement
         } catch (IndexOutOfBoundsException e) {
           // Cells outside the board are considered dead; do nothing
-        }
-      }
-    }
+        } // end of catch block
+      } // end of inner for loop
+    } // end of outer for loop
     return count;
-  } // countAliveNeighbors
+  } // end of countAliveNeighbors
 
   /**
    * Compute the next generation of the game board based on Conway's rules.
    *
-   * @param board
-   *   The current game board.
+   * @param board The current game board.
    * @return The next generation game board.
    */
   static Matrix<String> nextGeneration(Matrix<String> board) {
@@ -138,29 +125,25 @@ public class GameOfLife {
             newBoard.set(row, col, " "); // Cell dies
           } else {
             newBoard.set(row, col, "O"); // Cell lives
-          }
+          } // end of inner if-else block
         } else {
           if (aliveNeighbors == 3) {
             newBoard.set(row, col, "O"); // Cell becomes alive
           } else {
             newBoard.set(row, col, " "); // Cell remains dead
-          }
-        }
-      }
-    }
+          } // end of inner if-else block
+        } // end of outer if-else block
+      } // end of inner for loop
+    } // end of outer for loop
     return newBoard;
-  } // nextGeneration
+  } // end of nextGeneration
 
   /**
    * Set up a new game board with random alive and dead cells.
    *
-   * @param width
-   *   The width of the board.
-   * @param height
-   *   The height of the board.
-   * @param seed
-   *   The seed for the random number generator.
-   *
+   * @param width The width of the board.
+   * @param height The height of the board.
+   * @param seed The seed for the random number generator.
    * @return the newly created board
    */
   static Matrix<String> setupBoard(int width, int height, int seed) {
@@ -172,17 +155,16 @@ public class GameOfLife {
           board.set(row, col, "O");
         } else {
           board.set(row, col, " ");
-        }
-      }
-    }
+        } // end of if-else block
+      } // end of inner for loop
+    } // end of outer for loop
     return board;
-  } // setupBoard
+  } // end of setupBoard
 
   /**
    * Count the total number of alive cells on the board.
    *
-   * @param board
-   *   The game board.
+   * @param board The game board.
    * @return The total number of alive cells.
    */
   static int countTotalAlive(Matrix<String> board) {
@@ -191,21 +173,17 @@ public class GameOfLife {
       for (int col = 0; col < board.width(); col++) {
         if ("O".equals(board.get(row, col))) {
           total++;
-        }
-      }
-    }
+        } // end of if statement
+      } // end of inner for loop
+    } // end of outer for loop
     return total;
-  } // countTotalAlive
-
-  // +------+--------------------------------------------------------
-  // | Main |
-  // +------+
+  } // end of countTotalAlive
 
   /**
    * Run Conway's Game of Life.
    *
-   * @param args
-   *   Command-line arguments.
+   * @param args Command-line arguments.
+   * @throws IOException if input/output error occurs.
    */
   public static void main(String[] args) throws IOException {
     PrintWriter pen = new PrintWriter(System.out, true);
@@ -224,11 +202,11 @@ public class GameOfLife {
           } catch (Exception e) {
             System.err.printf("Invalid width: %s (not an integer)\n", args[i]);
             return;
-          }
+          } // end of catch block
           if (width < 4) {
             System.err.printf("Invalid width: %s (less than 4)\n", width);
             return;
-          }
+          } // end of if statement
           break;
 
         case "-h":
@@ -237,11 +215,11 @@ public class GameOfLife {
           } catch (Exception e) {
             System.err.printf("Invalid height: %s (not an integer)\n", args[i]);
             return;
-          }
+          } // end of catch block
           if (height < 4) {
             System.err.printf("Invalid height: %s (less than 4)\n", height);
             return;
-          }
+          } // end of if statement
           break;
 
         case "-s":
@@ -250,14 +228,14 @@ public class GameOfLife {
           } catch (Exception e) {
             System.err.printf("Invalid seed number: %s\n", args[i]);
             return;
-          }
+          } // end of catch block
           break;
 
         default:
           System.err.printf("Invalid command-line flag: %s\n", args[i]);
           return;
-      }
-    }
+      } // end of switch block
+    } // end of for loop
 
     // Get started
     printInstructions(pen);
@@ -290,11 +268,11 @@ public class GameOfLife {
         default:
           pen.printf("Unexpected command: '%s'. Please try again.\n", command);
           break;
-      }
-    }
+      } // end of switch block
+    } // end of while loop
 
     // And we're done
     pen.println("Thank you for playing Conway's Game of Life!");
     pen.close();
-  } // main(String[])
-} // class GameOfLife
+  } // end of main method
+} // end of GameOfLife class
