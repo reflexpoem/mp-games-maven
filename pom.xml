@@ -43,7 +43,7 @@
           <artifactId>exec-maven-plugin</artifactId>
           <version>3.3.0</version>
           <configuration>
-            <mainClass>edu.grinnell.csc207.sample.Game1P</mainClass>
+            <mainClass>edu.grinnell.csc207.sample.GameOfLife</mainClass>
           </configuration>
         </plugin>
 
