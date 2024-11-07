@@ -1,4 +1,4 @@
-package edu.grinnell.csc207.sample;
+package edu.grinnell.csc207.main;
 
 import edu.grinnell.csc207.util.IOUtils;
 import edu.grinnell.csc207.util.Matrix;
